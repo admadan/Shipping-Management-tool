@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # Set up Streamlit page config
 st.set_page_config(page_title="Shipping Dashboard", layout="wide")
@@ -86,22 +87,21 @@ if page == "Vessel Profile":
 if page == "LNG Market":
     st.title("📈 LNG Market Trends")
     
-    # Placeholder data (Replace with real data loading method)
-    date_rng = pd.date_range(start='2023-01-01', periods=100, freq='W')
-    market_data = pd.DataFrame({
-        "Date": date_rng,
-        "Spot Rate": (150 + (20 * np.random.randn(len(date_rng)))).cumsum(),
-        "1 Year TC": (120 + (15 * np.random.randn(len(date_rng)))).cumsum(),
-        "3 Year TC": (100 + (10 * np.random.randn(len(date_rng)))).cumsum()
-    })
-    market_data.set_index("Date", inplace=True)
+    # Load LNG market data from Excel
+    working_dir = 'C:/Users/admad/Documents/VSC Workspace/LNG'
+    os.chdir(working_dir)
+    file_name = 'LNG_Data_condolidates_03112024.xlsx'
+    sheet_name = 'Weekly data_160K CBM'
+    
+    df_TCvsSpot = pd.read_excel(file_name, sheet_name=sheet_name, parse_dates=["Date"])
+    df_TCvsSpot.set_index("Date", inplace=True)
     
     # Option to select frequency
     freq_option = st.radio("Select Data Frequency", ["Weekly", "Monthly", "Yearly"])
     if freq_option == "Monthly":
-        market_data = market_data.resample("M").mean()
+        df_TCvsSpot = df_TCvsSpot.resample("M").mean()
     elif freq_option == "Yearly":
-        market_data = market_data.resample("Y").mean()
+        df_TCvsSpot = df_TCvsSpot.resample("Y").mean()
     
     # Plot time series
-    st.line_chart(market_data)
+    st.line_chart(df_TCvsSpot)
