@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Shipping Dashboard", layout="wide")
 
 # Sidebar for navigation
-page = st.sidebar.radio("Select Page", ["Home", "Vessel Profile"])
+page = st.sidebar.radio("Select Page", ["Home", "Vessel Profile", "LNG Market"])
 
 if page == "Home":
     st.title("Shipping Market Equilibrium Calculator")
@@ -81,3 +81,26 @@ if page == "Vessel Profile":
     # Show a summary of total fleet fuel cost
     total_fuel_cost = vessel_data["Fuel_Cost_per_Day"].sum()
     st.metric(label="Total Fleet Fuel Cost per Day (USD)", value=f"${total_fuel_cost:,.2f}")
+
+if page == "LNG Market":
+    st.title("📈 LNG Market Trends")
+    
+    # Placeholder data (Replace with real data loading method)
+    date_rng = pd.date_range(start='2023-01-01', periods=100, freq='W')
+    market_data = pd.DataFrame({
+        "Date": date_rng,
+        "Spot Rate": (150 + (20 * pd.np.random.randn(len(date_rng)))).cumsum(),
+        "1 Year TC": (120 + (15 * pd.np.random.randn(len(date_rng)))).cumsum(),
+        "3 Year TC": (100 + (10 * pd.np.random.randn(len(date_rng)))).cumsum()
+    })
+    market_data.set_index("Date", inplace=True)
+    
+    # Option to select frequency
+    freq_option = st.radio("Select Data Frequency", ["Weekly", "Monthly", "Yearly"])
+    if freq_option == "Monthly":
+        market_data = market_data.resample("M").mean()
+    elif freq_option == "Yearly":
+        market_data = market_data.resample("Y").mean()
+    
+    # Plot time series
+    st.line_chart(market_data)
