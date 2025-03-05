@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 # Set up Streamlit page config
@@ -89,9 +90,9 @@ if page == "LNG Market":
     date_rng = pd.date_range(start='2023-01-01', periods=100, freq='W')
     market_data = pd.DataFrame({
         "Date": date_rng,
-        "Spot Rate": (150 + (20 * pd.np.random.randn(len(date_rng)))).cumsum(),
-        "1 Year TC": (120 + (15 * pd.np.random.randn(len(date_rng)))).cumsum(),
-        "3 Year TC": (100 + (10 * pd.np.random.randn(len(date_rng)))).cumsum()
+        "Spot Rate": (150 + (20 * np.random.randn(len(date_rng)))).cumsum(),
+        "1 Year TC": (120 + (15 * np.random.randn(len(date_rng)))).cumsum(),
+        "3 Year TC": (100 + (10 * np.random.randn(len(date_rng)))).cumsum()
     })
     market_data.set_index("Date", inplace=True)
     
